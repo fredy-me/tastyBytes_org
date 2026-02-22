@@ -115,6 +115,11 @@ CREATE TABLE favorites (
 **2) Start XAMPP**
 - Start Apache and MariaDB (MySQL)
 
+**If you see “Invalid CSRF token.”**
+- This typically means PHP sessions are not persisting correctly in your local setup.
+- Clear cookies for `localhost` in your browser and refresh the page.
+- Ensure Apache is serving the site (not opening the file directly).
+
 **3) Create the database + tables**
 - Create a database named `tastybytes`
 - Import `database/schema/schema.sql`
