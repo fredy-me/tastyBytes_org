@@ -14,10 +14,30 @@ final class Session
 
         // Must be set before session_start()
         ini_set('session.use_strict_mode', '1');
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.cookie_samesite', 'Lax');
+        ini_set('session.use_only_cookies', '1');
 
-        session_start();
+        // Prevent common "CSRF token invalid" issues caused by sessions not persisting.
+        // Use a known-writable path (especially important on local XAMPP setups).
+        $tmp = sys_get_temp_dir();
+        if (is_string($tmp) && $tmp !== '' && is_dir($tmp) && is_writable($tmp)) {
+            session_save_path($tmp);
+        }
+
+        $cookie = session_get_cookie_params();
+        session_set_cookie_params([
+            'lifetime' => 0,
+            'path' => $cookie['path'] ?? '/',
+            'domain' => $cookie['domain'] ?? '',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+
+        @session_start();
+
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            throw new \RuntimeException('Failed to start session (check PHP session configuration).');
+        }
     }
 
     public static function regenerate(): void
@@ -57,4 +77,3 @@ final class Session
         return $value;
     }
 }
-
