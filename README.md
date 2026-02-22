@@ -122,7 +122,8 @@ CREATE TABLE favorites (
 
 **3) Create the database + tables**
 - Create a database named `tastybytes`
-- Import `database/schema/schema.sql`
+- Import `database/schema/schema.sql` (it includes `CREATE DATABASE` + `USE tastybytes;`)
+- If you use phpMyAdmin: click the `tastybytes` database in the left sidebar first, then go to the **Import** tab.
 
 **4) Configure DB credentials**
 - Defaults are set for local XAMPP in `config/database.php` (`DB_NAME=tastybytes`, `DB_USER=root`, empty password).
