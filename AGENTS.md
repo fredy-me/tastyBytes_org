@@ -14,6 +14,7 @@ TastyBytes is a PHP + SQL recipe management system with:
 - “Real-time updates” means the UI must reflect whether a submitted recipe has been `approved` or `rejected` by an admin (implementation can be polling/refresh unless specified otherwise).
 - Recipe images are **URL-based only** (`image_url`); do not implement file uploads.
 - Recipe titles must be **globally unique** (enforce with a DB unique constraint and handle conflicts in UX).
+- The UI must match the SRS mockups in `TastyBytes_SRS_Document - Google Docs.pdf` in layout, color palette, spacing, and overall arrangement.
 
 ## Data Model Expectations
 - `USERS` should include an account status concept (at minimum `active`/`disabled`) so admins can disable users.
@@ -29,4 +30,3 @@ TastyBytes is a PHP + SQL recipe management system with:
 - Keep changes minimal and aligned to the SRS + clarified requirements in the conversation.
 - Prefer simple PHP architecture (controllers/models/views) and clear directory structure over frameworks unless the user asks otherwise.
 </INSTRUCTIONS>
-
