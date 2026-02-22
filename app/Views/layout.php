@@ -19,9 +19,17 @@
             <nav class="tb-nav">
                 <a class="tb-nav__link" href="?route=home">Home</a>
                 <a class="tb-nav__link" href="?route=recipes">Recipes</a>
+                <?php if (\App\Support\Auth::user()): ?>
+                    <a class="tb-nav__link" href="?route=my_recipes">My Recipes</a>
+                    <a class="tb-nav__link" href="?route=favorites">Favorites</a>
+                <?php endif; ?>
+                <?php $navUser = \App\Support\Auth::user(); ?>
+                <?php if ($navUser && (string)($navUser['role'] ?? '') === 'admin'): ?>
+                    <a class="tb-nav__link" href="?route=admin">Admin</a>
+                <?php endif; ?>
             </nav>
             <div class="tb-actions">
-                <?php if (\App\Support\Auth::user()): ?>
+                <?php if ($navUser): ?>
                     <a class="tb-btn tb-btn--ghost" href="?route=logout">Logout</a>
                 <?php else: ?>
                     <a class="tb-btn tb-btn--ghost" href="?route=login">Login</a>
@@ -32,5 +40,6 @@
     <main class="tb-main">
         <?= $content ?>
     </main>
+    <script src="assets/js/app.js"></script>
 </body>
 </html>
