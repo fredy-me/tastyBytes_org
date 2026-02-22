@@ -104,7 +104,36 @@ CREATE TABLE favorites (
 
 ## Setup (expected)
 
-1. Create a MySQL/MariaDB database (e.g. `tastybytes`).
-2. Apply the project schema (to be added under `database/`).
-3. Configure DB credentials in `config/` (to be added).
-4. Run with a local PHP server or Apache/Nginx + PHP-FPM.
+### XAMPP (recommended for this repo)
+
+**Base URL**
+- `http://localhost/TasteBytes/public/`
+
+**1) Put the project in Apache web root**
+- Copy or move this repo to your XAMPP `htdocs` as: `.../htdocs/TasteBytes`
+
+**2) Start XAMPP**
+- Start Apache and MariaDB (MySQL)
+
+**3) Create the database + tables**
+- Create a database named `tastybytes`
+- Import `database/schema/schema.sql`
+
+**4) Configure DB credentials**
+- Defaults are set for local XAMPP in `config/database.php` (`DB_NAME=tastybytes`, `DB_USER=root`, empty password).
+- If your local DB differs, edit `config/database.php` or set env vars: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`.
+
+**5) Seed the first admin**
+- Run:
+  - `DB_NAME=tastybytes DB_USER=root DB_PASS= /opt/lampp/bin/php database/seeds/seed_admin.php --username=Admin --email=admin@example.com --password=ChangeMe123`
+
+### Routes (current)
+
+- Home: `?route=home`
+- Login: `?route=login`
+- Register: `?route=register`
+- Recipes: `?route=recipes`
+- Favorites: `?route=favorites`
+- My Recipes: `?route=my_recipes`
+- Admin Dashboard: `?route=admin`
+- Admin Users: `?route=admin_users`
