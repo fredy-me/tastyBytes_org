@@ -7,7 +7,9 @@
 
 <section class="tb-auth">
     <div class="tb-auth__card">
-        <div class="tb-auth__icon">🧑‍🍳</div>
+        <div class="tb-auth__icon" aria-hidden="true">
+            <span class="tb-auth__icon-mark"></span>
+        </div>
         <h1 class="tb-auth__title">Join TastyBytes</h1>
         <p class="tb-auth__subtitle">Create your account and start cooking</p>
 
@@ -45,4 +47,3 @@
         </p>
     </div>
 </section>
-

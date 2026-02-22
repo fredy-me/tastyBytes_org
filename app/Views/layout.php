@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TastyBytes</title>
-    <link rel="stylesheet" href="public/assets/css/app.css" />
+    <link rel="stylesheet" href="assets/css/app.css" />
 </head>
 <body class="tb-page">
     <header class="tb-topbar">
@@ -34,4 +34,3 @@
     </main>
 </body>
 </html>
-
