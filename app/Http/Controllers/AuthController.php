@@ -31,7 +31,8 @@ final class AuthController
             Response::abort(405);
         }
         if (!Csrf::validate($_POST['csrf'] ?? null)) {
-            Response::abort(419, 'Invalid CSRF token.');
+            Session::flash('errors', ['Invalid CSRF token. Please refresh and try again.']);
+            Response::redirect('?route=login');
         }
 
         $email = trim(Request::input('email'));
@@ -76,7 +77,8 @@ final class AuthController
             Response::abort(405);
         }
         if (!Csrf::validate($_POST['csrf'] ?? null)) {
-            Response::abort(419, 'Invalid CSRF token.');
+            Session::flash('errors', ['Invalid CSRF token. Please refresh and try again.']);
+            Response::redirect('?route=register');
         }
 
         $username = trim(Request::input('username'));
@@ -105,4 +107,3 @@ final class AuthController
         Response::redirect('?route=login');
     }
 }
-
