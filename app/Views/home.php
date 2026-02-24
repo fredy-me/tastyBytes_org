@@ -2,6 +2,9 @@
 /** @var array<string,mixed>|null $user */
 /** @var list<string> $categories */
 /** @var list<array<string,mixed>> $featured */
+/** @var list<array<string,mixed>> $recipes */
+/** @var array<string,bool> $favoriteIds */
+/** @var string $csrf */
 ?>
 
 <section class="tb-home">
@@ -15,7 +18,11 @@
                 <a class="tb-btn tb-btn--ghost" href="?route=login">Login</a>
             </div>
         <?php else: ?>
-            <p class="tb-hero__subtitle">Logged in as <strong><?= htmlspecialchars((string) ($user['username'] ?? '')) ?></strong>.</p>
+            <p class="tb-hero__subtitle">Hello <strong><?= htmlspecialchars((string) ($user['username'] ?? '')) ?></strong>, ready to cook?</p>
+            <div class="tb-hero__actions">
+                <a class="tb-btn tb-btn--primary" href="?route=recipes">Browse Recipes</a>
+                <a class="tb-btn tb-btn--ghost" href="?route=recipe_create">Add Recipe</a>
+            </div>
         <?php endif; ?>
     </div>
 
@@ -69,6 +76,53 @@
             </div>
         <?php endif; ?>
     </div>
+
+    <?php if ($user): ?>
+        <div class="tb-section">
+            <div class="tb-section__head">
+                <h2 class="tb-section__title">All Available Recipes</h2>
+                <a class="tb-link" href="?route=recipes">Search/Filter →</a>
+            </div>
+            <?php if ($recipes === []): ?>
+                <div class="tb-empty">No approved recipes yet.</div>
+            <?php else: ?>
+                <div class="tb-grid">
+                    <?php foreach ($recipes as $r): ?>
+                        <?php
+                        $rid = (string) ($r['recipe_id'] ?? '');
+                        $img = (string) ($r['image_url'] ?? '');
+                        $isFav = (bool) ($favoriteIds[$rid] ?? false);
+                        ?>
+                        <article class="tb-card">
+                            <a class="tb-card__media" href="?route=recipe&id=<?= urlencode($rid) ?>">
+                                <?php if ($img !== ''): ?>
+                                    <img class="tb-card__img" src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars((string) ($r['title'] ?? 'Recipe')) ?>" />
+                                <?php else: ?>
+                                    <div class="tb-card__img tb-card__img--placeholder"></div>
+                                <?php endif; ?>
+                                <form class="tb-fav" method="post" action="?route=favorite_toggle">
+                                    <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf) ?>" />
+                                    <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($rid) ?>" />
+                                    <button class="tb-fav__btn" type="submit" aria-label="<?= $isFav ? 'Remove favorite' : 'Add favorite' ?>">
+                                        <span class="tb-fav__heart <?= $isFav ? 'is-on' : '' ?>"></span>
+                                    </button>
+                                </form>
+                            </a>
+                            <div class="tb-card__body">
+                                <div class="tb-card__meta">
+                                    <span class="tb-badge"><?= htmlspecialchars((string) ($r['category'] ?? '')) ?></span>
+                                    <span class="tb-card__author"><?= htmlspecialchars((string) ($r['author_name'] ?? '')) ?></span>
+                                </div>
+                                <a class="tb-card__title" href="?route=recipe&id=<?= urlencode($rid) ?>">
+                                    <?= htmlspecialchars((string) ($r['title'] ?? '')) ?>
+                                </a>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
     <?php if (!$user): ?>
         <div class="tb-cta">
