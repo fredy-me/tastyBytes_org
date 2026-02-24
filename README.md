@@ -120,6 +120,9 @@ CREATE TABLE favorites (
 - Clear cookies for `localhost` in your browser and refresh the page.
 - Ensure Apache is serving the site (not opening the file directly).
 - Use a normal (non-incognito) browser window and ensure cookies are allowed for `localhost`.
+- Debug session: open `http://localhost/TasteBytes/public/?route=debug_session` twice; `session_id` should stay the same and `cookie_in_request=yes`.
+- If `cookie_in_request=no` or `session_id` changes on refresh, fix sessions in XAMPP (common causes: `open_basedir` restrictions or non-writable `session.save_path`).
+- On Linux XAMPP, you can often fix it by ensuring `/opt/lampp/temp` is writable, or by allowing `.../htdocs/TasteBytes/storage/sessions` and making it writable for Apache.
 
 **3) Create the database + tables**
 - Create a database named `tastybytes`

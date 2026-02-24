@@ -13,6 +13,52 @@ require __DIR__ . '/../app/Support/Autoload.php';
 $route = \App\Support\Request::route();
 
 switch ($route) {
+    case 'debug_session':
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        if ($ip !== '127.0.0.1' && $ip !== '::1') {
+            \App\Support\Response::abort(404);
+        }
+        header('Content-Type: text/plain; charset=utf-8');
+        echo "method=" . (\App\Support\Request::method()) . "\n";
+        echo "remote_addr=" . $ip . "\n";
+        echo "open_basedir=" . (string) ini_get('open_basedir') . "\n";
+        echo "session_cookie_path=" . (string) ini_get('session.cookie_path') . "\n";
+        echo "session_status=" . session_status() . "\n";
+        echo "session_name=" . session_name() . "\n";
+        echo "session_id=" . session_id() . "\n";
+        echo "cookie_value=" . (string) ($_COOKIE[session_name()] ?? '') . "\n";
+        echo "cookie_matches_session_id=" . ((string) ($_COOKIE[session_name()] ?? '') === session_id() ? 'yes' : 'no') . "\n";
+        echo "session_save_path=" . session_save_path() . "\n";
+        echo "cookie_in_request=" . (isset($_COOKIE[session_name()]) ? 'yes' : 'no') . "\n";
+        echo "cookie_keys=" . implode(',', array_keys($_COOKIE)) . "\n";
+        echo "csrf_in_session=" . (\App\Support\Session::get('csrf_token') ? 'yes' : 'no') . "\n";
+        echo "csrf_token=" . (\App\Support\Csrf::token()) . "\n";
+        echo "response_headers=" . json_encode(headers_list()) . "\n";
+        exit;
+    case 'debug_csrf':
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        if ($ip !== '127.0.0.1' && $ip !== '::1') {
+            \App\Support\Response::abort(404);
+        }
+        if (\App\Support\Request::isPost()) {
+            header('Content-Type: text/plain; charset=utf-8');
+            $posted = $_POST['csrf'] ?? null;
+            echo "posted_csrf=" . (is_string($posted) ? $posted : '(missing)') . "\n";
+            echo "session_csrf=" . (\App\Support\Session::get('csrf_token') ?: '(missing)') . "\n";
+            echo "valid=" . (\App\Support\Csrf::validate(is_string($posted) ? $posted : null) ? 'yes' : 'no') . "\n";
+            echo "session_id=" . session_id() . "\n";
+            echo "cookie_value=" . (string) ($_COOKIE[session_name()] ?? '') . "\n";
+            exit;
+        }
+        $token = \App\Support\Csrf::token();
+        header('Content-Type: text/html; charset=utf-8');
+        echo '<!doctype html><meta charset="utf-8"><title>CSRF Debug</title>';
+        echo '<p>Submit to verify CSRF/session works.</p>';
+        echo '<form method="post" action="?route=debug_csrf">';
+        echo '<input type="hidden" name="csrf" value="' . htmlspecialchars($token) . '">';
+        echo '<button type="submit">Submit</button>';
+        echo '</form>';
+        exit;
     case 'home':
         (new \App\Http\Controllers\HomeController())->index();
         break;

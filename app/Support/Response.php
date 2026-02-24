@@ -8,6 +8,7 @@ final class Response
 {
     public static function redirect(string $path): never
     {
+        \App\Support\Session::commit();
         header('Location: ' . $path);
         exit;
     }
@@ -21,4 +22,3 @@ final class Response
         exit;
     }
 }
-
