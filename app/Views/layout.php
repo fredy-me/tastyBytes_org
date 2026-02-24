@@ -34,7 +34,7 @@
                     <span class="tb-user"><?= htmlspecialchars((string) ($navUser['username'] ?? '')) ?></span>
                     <a class="tb-btn tb-btn--ghost" href="?route=logout">Logout</a>
                 <?php else: ?>
-                    <a class="tb-btn tb-btn--ghost" href="?route=login">Login</a>
+                    <a class="tb-btn tb-btn--primary" href="?route=login">Login</a>
                 <?php endif; ?>
             </div>
         </div>

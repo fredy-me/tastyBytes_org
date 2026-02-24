@@ -61,5 +61,33 @@
   }
 
   document.querySelectorAll("[data-repeater]").forEach(initRepeater);
-})();
 
+  function updateStatusBadges(recipes) {
+    Object.entries(recipes || {}).forEach(([id, data]) => {
+      const el = document.querySelector(`[data-status-badge="${CSS.escape(id)}"]`);
+      if (!el || !data) return;
+      const status = String(data.status || "");
+      const label = status ? status.charAt(0).toUpperCase() + status.slice(1) : "";
+      el.textContent = label;
+      el.classList.remove("tb-badge--pending", "tb-badge--approved", "tb-badge--rejected");
+      if (status) el.classList.add(`tb-badge--${status}`);
+    });
+  }
+
+  async function pollMyRecipeStatuses() {
+    const any = document.querySelector("[data-status-badge]");
+    if (!any) return;
+
+    try {
+      const res = await fetch("?route=my_recipes_status", { credentials: "same-origin" });
+      if (!res.ok) return;
+      const json = await res.json();
+      updateStatusBadges(json.recipes);
+    } catch (_) {
+      // ignore
+    }
+  }
+
+  pollMyRecipeStatuses();
+  setInterval(pollMyRecipeStatuses, 10000);
+})();
