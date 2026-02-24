@@ -59,6 +59,7 @@ final class Session
         }
 
         $project = dirname(__DIR__, 2) . '/storage/sessions';
+        self::tryPrepareDir($project);
         $candidates[] = $project;
 
         foreach ($candidates as $path) {
@@ -70,6 +71,9 @@ final class Session
                 continue;
             }
             if (!is_dir($path)) {
+                self::tryPrepareDir($path);
+            }
+            if (!is_dir($path)) {
                 continue;
             }
             if (!is_writable($path)) {
@@ -78,6 +82,23 @@ final class Session
 
             session_save_path($path);
             return;
+        }
+    }
+
+    private static function tryPrepareDir(string $path): void
+    {
+        $path = rtrim($path, '/');
+        if ($path === '') {
+            return;
+        }
+        if (!self::isAllowedByOpenBasedir($path)) {
+            return;
+        }
+        if (!is_dir($path)) {
+            @mkdir($path, 0777, true);
+        }
+        if (is_dir($path) && !is_writable($path)) {
+            @chmod($path, 0777);
         }
     }
 
