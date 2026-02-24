@@ -21,6 +21,10 @@ $imageUrl = (string) ($old['image_url'] ?? ($recipe['image_url'] ?? ''));
 $ingredients = isset($old['ingredients']) && is_array($old['ingredients']) ? $old['ingredients'] : ($ingredients ?? []);
 $steps = isset($old['steps']) && is_array($old['steps']) ? $old['steps'] : ($steps ?? []);
 
+if (!is_array($categories ?? null) || $categories === []) {
+    $categories = \App\Models\Categories::all();
+}
+
 if ($ingredients === []) {
     $ingredients = [''];
 }
@@ -103,4 +107,3 @@ if ($steps === []) {
         </form>
     </div>
 </section>
-

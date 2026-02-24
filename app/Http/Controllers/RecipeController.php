@@ -365,7 +365,7 @@ final class RecipeController
             $errors[] = 'Title is required.';
         }
         if (!in_array($category, Categories::all(), true)) {
-            $errors[] = 'Please choose a valid category.';
+            $errors[] = 'Please choose a valid category: ' . implode(', ', Categories::all()) . '.';
         }
         if ($ingredients === []) {
             $errors[] = 'At least one ingredient is required.';
