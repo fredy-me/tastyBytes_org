@@ -40,11 +40,20 @@
                 <div><span class="tb-badge tb-badge--status tb-badge--<?= htmlspecialchars((string) ($u['status'] ?? '')) ?>"><?= htmlspecialchars((string) ($u['status'] ?? '')) ?></span></div>
                 <div class="tb-table__actions">
                     <?php if (!$isSelf): ?>
-                        <form method="post" action="?route=admin_user_disable" class="tb-inline">
-                            <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf) ?>" />
-                            <input type="hidden" name="id" value="<?= htmlspecialchars($uid) ?>" />
-                            <button class="tb-btn tb-btn--ghost" type="submit">Disable</button>
-                        </form>
+                        <?php $status = (string) ($u['status'] ?? ''); ?>
+                        <?php if ($status === 'disabled'): ?>
+                            <form method="post" action="?route=admin_user_enable" class="tb-inline">
+                                <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf) ?>" />
+                                <input type="hidden" name="id" value="<?= htmlspecialchars($uid) ?>" />
+                                <button class="tb-btn tb-btn--ghost" type="submit">Enable</button>
+                            </form>
+                        <?php else: ?>
+                            <form method="post" action="?route=admin_user_disable" class="tb-inline">
+                                <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf) ?>" />
+                                <input type="hidden" name="id" value="<?= htmlspecialchars($uid) ?>" />
+                                <button class="tb-btn tb-btn--ghost" type="submit">Disable</button>
+                            </form>
+                        <?php endif; ?>
                         <form method="post" action="?route=admin_user_delete" class="tb-inline" onsubmit="return confirm('Delete this user and all their recipes?');">
                             <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf) ?>" />
                             <input type="hidden" name="id" value="<?= htmlspecialchars($uid) ?>" />
@@ -58,4 +67,3 @@
         <?php endforeach; ?>
     </div>
 </section>
-

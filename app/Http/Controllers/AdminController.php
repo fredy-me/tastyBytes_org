@@ -141,6 +141,18 @@ final class AdminController
         Response::redirect('?route=admin_users');
     }
 
+    public function enableUser(): void
+    {
+        $this->requireAdminPost();
+        $id = trim(Request::input('id'));
+        if ($id === '') {
+            Response::abort(400);
+        }
+        User::enable($id);
+        Session::flash('message', 'User enabled.');
+        Response::redirect('?route=admin_users');
+    }
+
     public function deleteUser(): void
     {
         $this->requireAdminPost();

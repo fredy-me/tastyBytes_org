@@ -144,6 +144,9 @@ switch ($route) {
     case 'admin_user_disable':
         (new \App\Http\Controllers\AdminController())->disableUser();
         break;
+    case 'admin_user_enable':
+        (new \App\Http\Controllers\AdminController())->enableUser();
+        break;
     case 'admin_user_delete':
         (new \App\Http\Controllers\AdminController())->deleteUser();
         break;

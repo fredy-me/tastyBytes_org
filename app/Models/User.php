@@ -76,6 +76,12 @@ final class User extends Model
         $stmt->execute(['id' => $userId]);
     }
 
+    public static function enable(string $userId): void
+    {
+        $stmt = self::db()->prepare("UPDATE users SET status = 'active' WHERE user_id = :id");
+        $stmt->execute(['id' => $userId]);
+    }
+
     public static function updateProfile(string $userId, string $username, string $email): void
     {
         $stmt = self::db()->prepare(
