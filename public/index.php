@@ -31,6 +31,7 @@ switch ($route) {
         echo "session_save_path=" . session_save_path() . "\n";
         echo "cookie_in_request=" . (isset($_COOKIE[session_name()]) ? 'yes' : 'no') . "\n";
         echo "cookie_keys=" . implode(',', array_keys($_COOKIE)) . "\n";
+        echo "csrf_cookie=" . (string) ($_COOKIE['TBCSRF'] ?? '') . "\n";
         echo "csrf_in_session=" . (\App\Support\Session::get('csrf_token') ? 'yes' : 'no') . "\n";
         echo "csrf_token=" . (\App\Support\Csrf::token()) . "\n";
         $authUserId = \App\Support\Session::get(\App\Support\Auth::SESSION_USER_ID);
@@ -54,6 +55,7 @@ switch ($route) {
             $posted = $_POST['csrf'] ?? null;
             echo "posted_csrf=" . (is_string($posted) ? $posted : '(missing)') . "\n";
             echo "session_csrf=" . (\App\Support\Session::get('csrf_token') ?: '(missing)') . "\n";
+            echo "cookie_csrf=" . (string) ($_COOKIE['TBCSRF'] ?? '') . "\n";
             echo "valid=" . (\App\Support\Csrf::validate(is_string($posted) ? $posted : null) ? 'yes' : 'no') . "\n";
             echo "session_id=" . session_id() . "\n";
             echo "cookie_value=" . (string) ($_COOKIE[session_name()] ?? '') . "\n";
