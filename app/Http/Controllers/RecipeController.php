@@ -323,8 +323,13 @@ final class RecipeController
         }
 
         $recipe = Recipe::findById($recipeId);
-        if ($recipe === null || (string) ($recipe['status'] ?? '') !== 'approved') {
-            Response::abort(404);
+        $back = $_SERVER['HTTP_REFERER'] ?? '?route=recipes';
+        if ($recipe === null) {
+            Response::redirect($back);
+        }
+        if ((string) ($recipe['status'] ?? '') !== 'approved') {
+            Session::flash('errors', ['Only approved recipes can be favorited.']);
+            Response::redirect($back);
         }
 
         $uid = (string) $user['user_id'];
@@ -334,7 +339,6 @@ final class RecipeController
             Favorite::add($uid, $recipeId);
         }
 
-        $back = $_SERVER['HTTP_REFERER'] ?? '?route=recipes';
         Response::redirect($back);
     }
 

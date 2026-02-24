@@ -17,7 +17,7 @@ $isAdmin = $user && ((string) ($user['role'] ?? '') === 'admin');
     <div class="tb-recipe__top">
         <a class="tb-link" href="?route=recipes">← Back to recipes</a>
         <div class="tb-recipe__actions">
-            <?php if ($user): ?>
+            <?php if ($user && $status === 'approved'): ?>
                 <form method="post" action="?route=favorite_toggle">
                     <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf) ?>" />
                     <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($rid) ?>" />
