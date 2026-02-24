@@ -6,6 +6,8 @@ namespace App\Support;
 
 final class Session
 {
+    private const SESSION_NAME = 'TBSESSID';
+
     public static function start(): void
     {
         if (session_status() === PHP_SESSION_ACTIVE) {
@@ -23,11 +25,12 @@ final class Session
             session_save_path($tmp);
         }
 
-        $cookie = session_get_cookie_params();
+        session_name(self::SESSION_NAME);
         session_set_cookie_params([
             'lifetime' => 0,
-            'path' => $cookie['path'] ?? '/',
-            'domain' => $cookie['domain'] ?? '',
+            // Force '/' so the browser sends the cookie for /TasteBytes/public/ requests.
+            'path' => '/',
+            'domain' => '',
             'secure' => false,
             'httponly' => true,
             'samesite' => 'Lax',

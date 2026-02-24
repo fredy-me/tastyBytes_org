@@ -119,6 +119,7 @@ CREATE TABLE favorites (
 - This typically means PHP sessions are not persisting correctly in your local setup.
 - Clear cookies for `localhost` in your browser and refresh the page.
 - Ensure Apache is serving the site (not opening the file directly).
+- Use a normal (non-incognito) browser window and ensure cookies are allowed for `localhost`.
 
 **3) Create the database + tables**
 - Create a database named `tastybytes`
