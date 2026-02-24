@@ -33,6 +33,15 @@ switch ($route) {
         echo "cookie_keys=" . implode(',', array_keys($_COOKIE)) . "\n";
         echo "csrf_in_session=" . (\App\Support\Session::get('csrf_token') ? 'yes' : 'no') . "\n";
         echo "csrf_token=" . (\App\Support\Csrf::token()) . "\n";
+        $authUserId = \App\Support\Session::get(\App\Support\Auth::SESSION_USER_ID);
+        echo "auth_user_id=" . (is_string($authUserId) ? $authUserId : '(missing)') . "\n";
+        $authUser = \App\Support\Auth::user();
+        echo "auth_user_loaded=" . ($authUser ? 'yes' : 'no') . "\n";
+        if (is_array($authUser)) {
+            echo "auth_username=" . (string) ($authUser['username'] ?? '') . "\n";
+            echo "auth_role=" . (string) ($authUser['role'] ?? '') . "\n";
+            echo "auth_status=" . (string) ($authUser['status'] ?? '') . "\n";
+        }
         echo "response_headers=" . json_encode(headers_list()) . "\n";
         exit;
     case 'debug_csrf':
