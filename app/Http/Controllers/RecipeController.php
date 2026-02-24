@@ -88,7 +88,31 @@ final class RecipeController
             'recipes' => $recipes,
             'message' => Session::pullFlash('message', ''),
             'errors' => Session::pullFlash('errors', []),
+            'csrf' => Csrf::token(),
         ]);
+    }
+
+    public function myRecipeStatuses(): void
+    {
+        $user = Auth::user();
+        if (!$user) {
+            Response::abort(401);
+        }
+
+        $recipes = Recipe::listByUser((string) $user['user_id']);
+        $out = [];
+        foreach ($recipes as $r) {
+            $rid = (string) ($r['recipe_id'] ?? '');
+            if ($rid === '') {
+                continue;
+            }
+            $out[$rid] = [
+                'status' => (string) ($r['status'] ?? ''),
+                'updated_at' => (string) ($r['updated_at'] ?? ''),
+            ];
+        }
+
+        Response::json(['recipes' => $out]);
     }
 
     public function createForm(): void
@@ -355,4 +379,3 @@ final class RecipeController
         return $errors;
     }
 }
-

@@ -5,8 +5,11 @@
 ?>
 
 <section class="tb-favorites">
-    <div class="tb-recipes__header">
-        <h1 class="tb-recipes__title">My Favorites</h1>
+    <div class="tb-hero tb-hero--recipes">
+        <div>
+            <h1 class="tb-hero__title">My Favorites</h1>
+            <p class="tb-hero__subtitle">Recipes you've saved to try again later</p>
+        </div>
     </div>
 
     <?php if ($recipes === []): ?>
@@ -47,4 +50,3 @@
         </div>
     <?php endif; ?>
 </section>
-

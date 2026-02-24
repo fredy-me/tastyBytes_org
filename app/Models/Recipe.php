@@ -50,12 +50,81 @@ final class Recipe extends Model
     }
 
     /** @return list<array<string, mixed>> */
+    public static function listFeatured(int $limit = 3): array
+    {
+        $limit = max(1, min(12, $limit));
+        $stmt = self::db()->prepare(
+            "SELECT r.*, u.username AS author_name
+             FROM recipes r
+             INNER JOIN users u ON u.user_id = r.user_id
+             WHERE r.status = 'approved'
+             ORDER BY r.created_at DESC
+             LIMIT {$limit}"
+        );
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+        return is_array($rows) ? $rows : [];
+    }
+
+    /** @return list<array<string, mixed>> */
     public static function listByUser(string $userId): array
     {
         $stmt = self::db()->prepare('SELECT * FROM recipes WHERE user_id = :id ORDER BY created_at DESC');
         $stmt->execute(['id' => $userId]);
         $rows = $stmt->fetchAll();
         return is_array($rows) ? $rows : [];
+    }
+
+    /** @return list<array<string, mixed>> */
+    public static function listForAdmin(?string $status = null, string $search = ''): array
+    {
+        $search = trim($search);
+        $params = [];
+        $sql = "SELECT r.*, u.username AS author_name
+                FROM recipes r
+                INNER JOIN users u ON u.user_id = r.user_id
+                WHERE 1=1";
+
+        if ($status !== null && $status !== '') {
+            $sql .= ' AND r.status = :status';
+            $params['status'] = $status;
+        }
+
+        if ($search !== '') {
+            $sql .= ' AND r.title LIKE :search';
+            $params['search'] = '%' . $search . '%';
+        }
+
+        $sql .= ' ORDER BY r.created_at DESC';
+
+        $stmt = self::db()->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+        return is_array($rows) ? $rows : [];
+    }
+
+    /** @return array{pending:int,approved:int,rejected:int,total:int} */
+    public static function countsByStatus(): array
+    {
+        $stmt = self::db()->prepare(
+            "SELECT
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending,
+                SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) AS approved,
+                SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) AS rejected,
+                COUNT(*) AS total
+             FROM recipes"
+        );
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if (!is_array($row)) {
+            return ['pending' => 0, 'approved' => 0, 'rejected' => 0, 'total' => 0];
+        }
+        return [
+            'pending' => (int) ($row['pending'] ?? 0),
+            'approved' => (int) ($row['approved'] ?? 0),
+            'rejected' => (int) ($row['rejected'] ?? 0),
+            'total' => (int) ($row['total'] ?? 0),
+        ];
     }
 
     /** @return list<array<string, mixed>> */
@@ -175,6 +244,20 @@ final class Recipe extends Model
         }
     }
 
+    public static function deleteAsAdmin(string $recipeId): void
+    {
+        $db = self::db();
+        $db->beginTransaction();
+        try {
+            $db->prepare('DELETE FROM favorites WHERE recipe_id = :rid')->execute(['rid' => $recipeId]);
+            $db->prepare('DELETE FROM recipes WHERE recipe_id = :rid')->execute(['rid' => $recipeId]);
+            $db->commit();
+        } catch (\Throwable $e) {
+            $db->rollBack();
+            throw $e;
+        }
+    }
+
     public static function setStatus(string $recipeId, string $status): void
     {
         $now = (new DateTimeImmutable())->format('Y-m-d H:i:s');
@@ -204,4 +287,3 @@ final class Recipe extends Model
         return $out;
     }
 }
-

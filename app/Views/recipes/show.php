@@ -26,6 +26,11 @@ $isAdmin = $user && ((string) ($user['role'] ?? '') === 'admin');
             <?php endif; ?>
             <?php if ($isOwner): ?>
                 <a class="tb-btn tb-btn--ghost" href="?route=recipe_edit&id=<?= urlencode($rid) ?>">Edit</a>
+                <form method="post" action="?route=recipe_delete&id=<?= urlencode($rid) ?>" onsubmit="return confirm('Delete this recipe?');">
+                    <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf) ?>" />
+                    <input type="hidden" name="id" value="<?= htmlspecialchars($rid) ?>" />
+                    <button class="tb-btn tb-btn--ghost" type="submit">Delete</button>
+                </form>
             <?php endif; ?>
         </div>
     </div>
@@ -80,4 +85,3 @@ $isAdmin = $user && ((string) ($user['role'] ?? '') === 'admin');
         </div>
     </div>
 </section>
-

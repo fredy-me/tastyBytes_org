@@ -99,6 +99,9 @@ switch ($route) {
     case 'my_recipes':
         (new \App\Http\Controllers\RecipeController())->myRecipes();
         break;
+    case 'my_recipes_status':
+        (new \App\Http\Controllers\RecipeController())->myRecipeStatuses();
+        break;
     case 'recipe_create':
         $c = new \App\Http\Controllers\RecipeController();
         if (\App\Support\Request::isPost()) {
@@ -141,6 +144,18 @@ switch ($route) {
         break;
     case 'admin_user_delete':
         (new \App\Http\Controllers\AdminController())->deleteUser();
+        break;
+    case 'admin_recipes':
+        (new \App\Http\Controllers\AdminController())->recipes();
+        break;
+    case 'admin_recipe_delete':
+        (new \App\Http\Controllers\AdminController())->deleteRecipe();
+        break;
+    case 'profile':
+        (new \App\Http\Controllers\ProfileController())->show();
+        break;
+    case 'profile_update':
+        (new \App\Http\Controllers\ProfileController())->update();
         break;
     default:
         \App\Support\Response::abort(404, 'Not found.');

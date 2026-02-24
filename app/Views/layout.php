@@ -16,20 +16,22 @@
                 <span class="tb-brand__mark">TB</span>
                 <span class="tb-brand__name">TastyBytes</span>
             </a>
+            <?php $navUser = \App\Support\Auth::user(); ?>
             <nav class="tb-nav">
                 <a class="tb-nav__link" href="?route=home">Home</a>
                 <a class="tb-nav__link" href="?route=recipes">Recipes</a>
-                <?php if (\App\Support\Auth::user()): ?>
+                <?php if ($navUser): ?>
                     <a class="tb-nav__link" href="?route=my_recipes">My Recipes</a>
                     <a class="tb-nav__link" href="?route=favorites">Favorites</a>
+                    <a class="tb-nav__link" href="?route=profile">Profile</a>
                 <?php endif; ?>
-                <?php $navUser = \App\Support\Auth::user(); ?>
                 <?php if ($navUser && (string)($navUser['role'] ?? '') === 'admin'): ?>
                     <a class="tb-nav__link" href="?route=admin">Admin</a>
                 <?php endif; ?>
             </nav>
             <div class="tb-actions">
                 <?php if ($navUser): ?>
+                    <span class="tb-user"><?= htmlspecialchars((string) ($navUser['username'] ?? '')) ?></span>
                     <a class="tb-btn tb-btn--ghost" href="?route=logout">Logout</a>
                 <?php else: ?>
                     <a class="tb-btn tb-btn--ghost" href="?route=login">Login</a>

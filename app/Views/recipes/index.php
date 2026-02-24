@@ -11,9 +11,12 @@
 ?>
 
 <section class="tb-recipes">
-    <div class="tb-recipes__header">
-        <h1 class="tb-recipes__title">Discover Recipes</h1>
-        <div class="tb-recipes__header-actions">
+    <div class="tb-hero tb-hero--recipes">
+        <div>
+            <h1 class="tb-hero__title">Discover Recipes</h1>
+            <p class="tb-hero__subtitle">Browse our collection of delicious recipes</p>
+        </div>
+        <div class="tb-hero__actions">
             <?php if ($user): ?>
                 <a class="tb-btn tb-btn--primary" href="?route=recipe_create">Add Recipe</a>
             <?php endif; ?>
@@ -83,4 +86,3 @@
         </div>
     <?php endif; ?>
 </section>
-

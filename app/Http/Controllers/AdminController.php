@@ -26,10 +26,12 @@ final class AdminController
         }
 
         $pending = Recipe::listPending();
+        $counts = Recipe::countsByStatus();
 
         View::render('admin/dashboard', [
             'user' => $user,
             'pending' => $pending,
+            'counts' => $counts,
             'csrf' => Csrf::token(),
             'message' => Session::pullFlash('message', ''),
             'errors' => Session::pullFlash('errors', []),
@@ -70,8 +72,11 @@ final class AdminController
             Response::abort(403);
         }
 
-        $stmt = \App\Models\Database::pdo()->query('SELECT user_id, username, email, role, status, created_at FROM users ORDER BY created_at DESC');
-        $rows = $stmt ? $stmt->fetchAll() : [];
+        $stmt = \App\Models\Database::pdo()->prepare(
+            'SELECT user_id, username, email, role, status, created_at FROM users ORDER BY created_at DESC'
+        );
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
 
         View::render('admin/users', [
             'user' => $user,
@@ -80,6 +85,48 @@ final class AdminController
             'message' => Session::pullFlash('message', ''),
             'errors' => Session::pullFlash('errors', []),
         ]);
+    }
+
+    public function recipes(): void
+    {
+        $user = Auth::user();
+        if (!$user) {
+            Response::redirect('?route=login');
+        }
+        if ((string) ($user['role'] ?? '') !== 'admin') {
+            Response::abort(403);
+        }
+
+        $status = trim(Request::input('status'));
+        $status = $status !== '' ? $status : null;
+        $search = trim(Request::input('q'));
+
+        $recipes = Recipe::listForAdmin($status, $search);
+        $counts = Recipe::countsByStatus();
+
+        View::render('admin/recipes', [
+            'user' => $user,
+            'recipes' => $recipes,
+            'counts' => $counts,
+            'selectedStatus' => $status ?? '',
+            'search' => $search,
+            'csrf' => Csrf::token(),
+            'message' => Session::pullFlash('message', ''),
+            'errors' => Session::pullFlash('errors', []),
+        ]);
+    }
+
+    public function deleteRecipe(): void
+    {
+        $this->requireAdminPost();
+        $id = trim(Request::input('id'));
+        if ($id === '') {
+            Response::abort(400);
+        }
+
+        Recipe::deleteAsAdmin($id);
+        Session::flash('message', 'Recipe deleted.');
+        Response::redirect('?route=admin_recipes');
     }
 
     public function disableUser(): void
@@ -123,4 +170,3 @@ final class AdminController
         }
     }
 }
-

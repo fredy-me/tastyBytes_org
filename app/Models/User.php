@@ -76,6 +76,35 @@ final class User extends Model
         $stmt->execute(['id' => $userId]);
     }
 
+    public static function updateProfile(string $userId, string $username, string $email): void
+    {
+        $stmt = self::db()->prepare(
+            'UPDATE users SET username = :username, email = :email WHERE user_id = :id'
+        );
+
+        try {
+            $stmt->execute([
+                'id' => $userId,
+                'username' => $username,
+                'email' => $email,
+            ]);
+        } catch (PDOException $e) {
+            if ($e->getCode() === '23000') {
+                throw new RuntimeException('Email already exists.');
+            }
+            throw $e;
+        }
+    }
+
+    public static function updatePassword(string $userId, string $passwordHash): void
+    {
+        $stmt = self::db()->prepare('UPDATE users SET password = :password WHERE user_id = :id');
+        $stmt->execute([
+            'id' => $userId,
+            'password' => $passwordHash,
+        ]);
+    }
+
     public static function delete(string $userId): void
     {
         $db = self::db();
@@ -95,4 +124,3 @@ final class User extends Model
         }
     }
 }
-
