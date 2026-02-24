@@ -27,6 +27,7 @@ final class View
         extract($data, EXTR_SKIP);
 
         $content = (static function () use ($templatePath, $data): string {
+            extract($data, EXTR_SKIP);
             ob_start();
             include $templatePath;
             return (string) ob_get_clean();
@@ -35,4 +36,3 @@ final class View
         include $layoutPath;
     }
 }
-
